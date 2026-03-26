@@ -35,12 +35,12 @@ jobs:
           elif (( $(echo "$COVERAGE >= 70" | bc -l) )); then COLOR="yellow"
           elif (( $(echo "$COVERAGE >= 60" | bc -l) )); then COLOR="orange"
           fi
-          curl -s "https://img.shields.io/badge/coverage-${COVERAGE}%25-${COLOR}" > coverage.svg
+          curl -s "https://img.shields.io/badge/coverage-${COVERAGE}%25-${COLOR}" > /tmp/coverage.svg
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git checkout --orphan coverage-tmp
           git rm -rf . > /dev/null 2>&1
-          mv coverage.svg .
+          cp /tmp/coverage.svg coverage.svg
           git add coverage.svg
           git commit -m "Update coverage badge: ${COVERAGE}%"
           git push origin coverage-tmp:coverage --force
