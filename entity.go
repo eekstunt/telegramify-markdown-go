@@ -3,6 +3,8 @@
 // Instead of producing MarkdownV2 strings (which require escaping 18 special characters
 // with context-dependent rules), tgmd outputs plain text paired with entity objects that
 // use UTF-16 offsets — matching what the Telegram Bot API expects natively.
+//
+// All functions are safe for concurrent use.
 package tgmd
 
 // EntityType represents the type of a Telegram message entity.

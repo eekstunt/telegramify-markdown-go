@@ -1,5 +1,10 @@
 # telegramify-markdown-go
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/eekstunt/telegramify-markdown-go.svg)](https://pkg.go.dev/github.com/eekstunt/telegramify-markdown-go)
+[![Test](https://github.com/eekstunt/telegramify-markdown-go/actions/workflows/test.yml/badge.svg)](https://github.com/eekstunt/telegramify-markdown-go/actions/workflows/test.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/eekstunt/telegramify-markdown-go)](https://goreportcard.com/report/github.com/eekstunt/telegramify-markdown-go)
+[![Coverage](https://raw.githubusercontent.com/eekstunt/telegramify-markdown-go/coverage/coverage.svg)](https://raw.githubusercontent.com/eekstunt/telegramify-markdown-go/coverage/coverage.html)
+
 A Go library that converts Markdown to Telegram-compatible plain text with [MessageEntity](https://core.telegram.org/bots/api#messageentity) objects.
 
 Uses [goldmark](https://github.com/yuin/goldmark) for Markdown parsing.
@@ -45,12 +50,41 @@ msg := tgmd.Convert("**bold** and *italic*")
 
 // Convert and split into <=4096 UTF-16 unit messages
 msgs := tgmd.ConvertAndSplit(longMarkdown)
+```
+
+### Example with [go-telegram/bot](https://github.com/go-telegram/bot)
+
+```go
+import (
+    "github.com/go-telegram/bot"
+    "github.com/go-telegram/bot/models"
+    tgmd "github.com/eekstunt/telegramify-markdown-go"
+)
+
+// Convert and send
+msgs := tgmd.ConvertAndSplit(markdown)
 for _, msg := range msgs {
-    bot.SendMessage(ctx, &bot.SendMessageParams{
+    b.SendMessage(ctx, &bot.SendMessageParams{
         ChatID:   chatID,
         Text:     msg.Text,
-        Entities: toTelegramEntities(msg.Entities),
+        Entities: toEntities(msg.Entities),
     })
+}
+
+// tgmd.Entity fields map 1:1 to Telegram's MessageEntity,
+// so the conversion is a straightforward struct copy:
+func toEntities(ents []tgmd.Entity) []models.MessageEntity {
+    out := make([]models.MessageEntity, len(ents))
+    for i, e := range ents {
+        out[i] = models.MessageEntity{
+            Type:     models.MessageEntityType(e.Type),
+            Offset:   e.Offset,
+            Length:   e.Length,
+            URL:      e.URL,
+            Language: e.Language,
+        }
+    }
+    return out
 }
 ```
 
@@ -76,6 +110,10 @@ msg := tgmd.Convert(markdown,
     tgmd.WithMaxMessageLen(4096),
 )
 ```
+
+## License
+
+MIT
 
 ## Acknowledgments
 
