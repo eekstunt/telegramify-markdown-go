@@ -34,9 +34,9 @@ func (w *walker) renderTable(table *east.Table) {
 	colWidths := make([]int, numCols)
 	for _, row := range rows {
 		for i, cell := range row {
-			w := utf8.RuneCountInString(cell)
-			if w > colWidths[i] {
-				colWidths[i] = w
+			cw := utf8.RuneCountInString(cell)
+			if cw > colWidths[i] {
+				colWidths[i] = cw
 			}
 		}
 	}

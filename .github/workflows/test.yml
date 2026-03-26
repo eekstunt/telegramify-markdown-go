@@ -1,0 +1,64 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ['1.22', '1.23', '1.24', '1.25']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test -race -coverprofile=coverage.out ./...
+
+      - name: Coverage badge
+        if: matrix.go-version == '1.25' && github.event_name == 'push'
+        run: |
+          COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//')
+          COLOR="red"
+          if (( $(echo "$COVERAGE >= 90" | bc -l) )); then COLOR="brightgreen"
+          elif (( $(echo "$COVERAGE >= 80" | bc -l) )); then COLOR="green"
+          elif (( $(echo "$COVERAGE >= 70" | bc -l) )); then COLOR="yellow"
+          elif (( $(echo "$COVERAGE >= 60" | bc -l) )); then COLOR="orange"
+          fi
+          curl -s "https://img.shields.io/badge/coverage-${COVERAGE}%25-${COLOR}" > /tmp/coverage.svg
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git checkout --orphan coverage-tmp
+          git rm -rf . > /dev/null 2>&1
+          cp /tmp/coverage.svg coverage.svg
+          git add coverage.svg
+          git commit -m "Update coverage badge: ${COVERAGE}%"
+          git push origin coverage-tmp:coverage --force
+
+  staticcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      - name: Install staticcheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+      - name: Run staticcheck
+        run: staticcheck ./...
