@@ -3,7 +3,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/eekstunt/telegramify-markdown-go.svg)](https://pkg.go.dev/github.com/eekstunt/telegramify-markdown-go)
 [![Test](https://github.com/eekstunt/telegramify-markdown-go/actions/workflows/test.yml/badge.svg)](https://github.com/eekstunt/telegramify-markdown-go/actions/workflows/test.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/eekstunt/telegramify-markdown-go)](https://goreportcard.com/report/github.com/eekstunt/telegramify-markdown-go)
-[![Coverage](https://raw.githubusercontent.com/eekstunt/telegramify-markdown-go/coverage/coverage.svg)](https://raw.githubusercontent.com/eekstunt/telegramify-markdown-go/coverage/coverage.html)
+[![Coverage](https://raw.githubusercontent.com/eekstunt/telegramify-markdown-go/coverage/coverage.svg)](https://github.com/eekstunt/telegramify-markdown-go/actions/workflows/test.yml)
 
 A Go library that converts Markdown to Telegram-compatible plain text with [MessageEntity](https://core.telegram.org/bots/api#messageentity) objects.
 
