@@ -221,14 +221,12 @@ func (w *walker) walk(n ast.Node, entering bool) (ast.WalkStatus, error) {
 				} else {
 					// Skip bullet marker if this list item starts with a task checkbox.
 					hasCheckbox := false
-					for child := node.FirstChild(); child != nil; child = child.NextSibling() {
-						// Check the first grandchild of the first child (paragraph).
+					if child := node.FirstChild(); child != nil {
 						if fc := child.FirstChild(); fc != nil {
 							if _, ok := fc.(*east.TaskCheckBox); ok {
 								hasCheckbox = true
 							}
 						}
-						break
 					}
 					if !hasCheckbox {
 						w.writeText(indent + w.cfg.bulletMarker + " ")
