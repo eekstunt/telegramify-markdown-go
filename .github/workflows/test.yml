@@ -30,8 +30,8 @@ jobs:
         uses: ncruces/go-coverage-report@v0
         with:
           coverage-file: coverage.out
-          report: true
-          chart: true
+          report: false
+          chart: false
           amend: false
 
   staticcheck:
